@@ -1,4 +1,5 @@
 ﻿using JSpotifyClient;
+using SpotifyPlaylistTool.SpotifyApi;
 
 namespace SpotifyPlaylistTool;
 
@@ -12,12 +13,11 @@ public static class MauiProgram
             .ConfigureFonts(fonts => { fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular"); });
 
         builder.Services.AddMauiBlazorWebView();
-
-        builder.Services.AddSingleton<ISpotifyClient, SpotifyClient>();
+        
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
-
+        
         return builder.Build();
     }
 }
