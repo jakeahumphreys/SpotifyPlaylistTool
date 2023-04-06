@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.WebView.Maui;
-using SpotifyPlaylistTool.Data;
-
-namespace SpotifyPlaylistTool;
+﻿namespace SpotifyPlaylistTool;
 
 public static class MauiProgram
 {
@@ -16,9 +13,7 @@ public static class MauiProgram
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
-
-        builder.Services.AddSingleton<WeatherForecastService>();
-
+        
         return builder.Build();
     }
 }
