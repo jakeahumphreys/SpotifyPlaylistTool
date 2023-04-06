@@ -49,4 +49,9 @@
         <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="JCommon" Version="1.0.0" />
+      <PackageReference Include="JSpotifyClient" Version="1.0.0" />
+    </ItemGroup>
+
 </Project>
