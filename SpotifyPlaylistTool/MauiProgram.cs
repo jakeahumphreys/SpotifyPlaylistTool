@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Nodes;
+﻿using System.Security.Cryptography;
+using System.Text;
 using JSpotifyClient;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -49,6 +50,13 @@ public static class MauiProgram
         var json = File.ReadAllText(settingsFilePath);
         var existingAppSettings = JsonConvert.DeserializeObject<AppSettings>(json);
         var jsonProperties = JObject.Parse(json).Properties();
+
+        var sha256 = SHA256.Create();
+        var fileHash = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        var objectHash = sha256.ComputeHash(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(existingAppSettings)));
+
+        if (fileHash.SequenceEqual(objectHash))
+            return existingAppSettings;
 
         foreach (var property in typeof(AppSettings).GetProperties())
         {
