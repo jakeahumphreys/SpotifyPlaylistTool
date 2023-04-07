@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using JSpotifyClient;
 using SpotifyPlaylistTool.Settings;
 
 namespace SpotifyPlaylistTool;
@@ -21,6 +22,7 @@ public static class MauiProgram
         var appSettings = LoadOrCreateSettings();
 
         builder.Services.AddSingleton(appSettings);
+        builder.Services.AddSingleton<ISpotifyClient>(new SpotifyClient(appSettings.SpotifyClientId, appSettings.SpotifyClientSecret));
         
         return builder.Build();
     }
