@@ -14,7 +14,7 @@ public sealed class SpotifyClientService
 
     public async Task<List<PlaylistItem>> GetPlaylistsForUserId(string userId)
     {
-        var response = _spotifyClient.GetPlaylistsForUserId(userId).Result;
+        var response = await _spotifyClient.GetPlaylistsForUserId(userId);
 
         if (response.IsFailure)
         {
