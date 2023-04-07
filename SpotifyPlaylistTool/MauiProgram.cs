@@ -49,7 +49,7 @@ public static class MauiProgram
 
         var json = File.ReadAllText(settingsFilePath);
         var existingAppSettings = JsonConvert.DeserializeObject<AppSettings>(json);
-        var jsonProperties = JObject.Parse(json).Properties();
+        var jsonProperties = JObject.Parse(json).Properties().ToList();
 
         var sha256 = SHA256.Create();
         var fileHash = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));

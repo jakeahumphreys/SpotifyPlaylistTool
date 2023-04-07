@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace SpotifyPlaylistTool.Settings;
+﻿namespace SpotifyPlaylistTool.Settings;
 
 public sealed class AppSettings
 {
