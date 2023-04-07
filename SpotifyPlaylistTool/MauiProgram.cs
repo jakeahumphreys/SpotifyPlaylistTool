@@ -1,6 +1,9 @@
-﻿using System.Text.Json;
+﻿using System.Text.Json.Nodes;
 using JSpotifyClient;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SpotifyPlaylistTool.Settings;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace SpotifyPlaylistTool;
 
@@ -19,7 +22,7 @@ public static class MauiProgram
         builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
 
-        var appSettings = LoadOrCreateSettings();
+        var appSettings = LoadSettingsFile();
 
         builder.Services.AddSingleton(appSettings);
         builder.Services.AddSingleton<ISpotifyClient>(new SpotifyClient(appSettings.SpotifyClientId, appSettings.SpotifyClientSecret));
@@ -27,7 +30,7 @@ public static class MauiProgram
         return builder.Build();
     }
 
-    private static AppSettings LoadOrCreateSettings()
+    private static AppSettings LoadSettingsFile()
     {
         var appDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Spotify Playlist Tool");
 
@@ -43,8 +46,23 @@ public static class MauiProgram
             return appSettings;
         }
 
-        var settingsFileJson = File.ReadAllText(settingsFilePath);
+        var json = File.ReadAllText(settingsFilePath);
+        var existingAppSettings = JsonConvert.DeserializeObject<AppSettings>(json);
+        var jsonProperties = JObject.Parse(json).Properties();
 
-        return JsonSerializer.Deserialize<AppSettings>(settingsFileJson);
+        foreach (var property in typeof(AppSettings).GetProperties())
+        {
+            var jsonProperty = jsonProperties.FirstOrDefault(x => x.Name.Equals(property.Name));
+            
+            if(jsonProperty == null)
+                property.SetValue(existingAppSettings, null);
+            else
+                property.SetValue(existingAppSettings, jsonProperty.Value.ToObject(property.PropertyType));
+        }
+
+        var updatedJson = new JObject(typeof(AppSettings).GetProperties().Select(x => new JProperty(x.Name, x.GetValue(existingAppSettings))));
+        File.WriteAllText(settingsFilePath, JsonConvert.SerializeObject(updatedJson));
+        
+        return existingAppSettings;
     }
 }
