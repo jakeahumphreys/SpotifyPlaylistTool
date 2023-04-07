@@ -1,0 +1,8 @@
+﻿@page "/Playlists"
+<h3>Playlists</h3>
+@if (ErrorMessage != null)
+{
+    <h3>@ErrorMessage</h3>
+}
+
+@UserPlaylists.Count

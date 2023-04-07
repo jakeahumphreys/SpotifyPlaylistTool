@@ -1,11 +1,15 @@
-using JCommon.Communication.Internal;
 using JSpotifyClient;
-using JSpotifyClient.Types;
 using SpotifyPlaylistTool.Settings;
+using SpotifyPlaylistTool.SpotifyApi.Types;
 
 namespace SpotifyPlaylistTool.SpotifyApi;
 
-public sealed class SpotifyClientService
+public interface ISpotifyClientService
+{
+    public Task<PlaylistsForUserResponse> GetPlaylistsForStoredUserId();
+}
+
+public sealed class SpotifyClientService : ISpotifyClientService
 {
     private readonly ISpotifyClient _spotifyClient;
     private readonly AppSettings _appSettings;
@@ -16,16 +20,19 @@ public sealed class SpotifyClientService
         _appSettings = appSettings;
     }
 
-    public async Task<Result<List<PlaylistItem>>> GetPlaylistsForStoredUserId()
+    public async Task<PlaylistsForUserResponse> GetPlaylistsForStoredUserId()
     {
         var userId = _appSettings.SpotifyUserId;
-        var response = await _spotifyClient.GetPlaylistsForUserId(userId);
+        var response =  await _spotifyClient.GetPlaylistsForUserId(userId);
 
         if (response.IsFailure)
         {
-            return new Result<List<PlaylistItem>>().WithError(response.Errors.First().Message);
+            return new PlaylistsForUserResponse().WithError<PlaylistsForUserResponse>(response.Errors.First());
         }
 
-        return new Result<List<PlaylistItem>>(response.Content.Items);
+        return new PlaylistsForUserResponse
+        {
+            PlaylistItems = response.Content.Items
+        };
     }
 }

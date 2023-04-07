@@ -4,6 +4,7 @@ using JSpotifyClient;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SpotifyPlaylistTool.Settings;
+using SpotifyPlaylistTool.SpotifyApi;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace SpotifyPlaylistTool;
@@ -27,6 +28,7 @@ public static class MauiProgram
 
         builder.Services.AddSingleton(appSettings);
         builder.Services.AddSingleton<ISpotifyClient>(new SpotifyClient(appSettings.SpotifyClientId, appSettings.SpotifyClientSecret));
+        builder.Services.AddSingleton<ISpotifyClientService, SpotifyClientService>();
         
         return builder.Build();
     }
